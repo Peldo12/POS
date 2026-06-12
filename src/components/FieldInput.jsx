@@ -1,4 +1,4 @@
-export default function FieldInput({ label, type = "text", value, onChange, error, success, hint, icon, ...props }) {
+export default function FieldInput({ label, name, type = "text", value, onChange, error, success, hint, icon, ...props }) {
   const borderClass = error
     ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
     : success
@@ -28,11 +28,12 @@ export default function FieldInput({ label, type = "text", value, onChange, erro
   return (
     <div className="relative">
       <input
+        name={name}
         type={type}
         value={value}
         onChange={onChange}
         placeholder=" "
-        className={`peer w-full rounded-xl bg-zinc-900 ${borderClass} border px-4 pt-5 pb-2 text-sm text-zinc-100 outline-none transition-all focus:ring-2 placeholder-transparent ${icon ? "pr-10" : ""}`}
+        className={`peer rounded-xl bg-zinc-900 ${borderClass} border px-4 pt-5 pb-2 text-sm text-zinc-100 outline-none transition-all focus:ring-2 placeholder-transparent ${icon ? "pr-10" : ""}`}
         {...props}
       />
       <label className={`pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-zinc-500 transition-all ${labelFloated} ${labelColor}`}>

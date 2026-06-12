@@ -1,5 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import Status from '../components/Status'
 import LabelNumber from '../components/LabelNumber'
@@ -12,11 +13,14 @@ const Dashboard = () => {
   const [items, setItems] = useState([])
   const [connect, setConnect] = useState("")
   
+  const navigate = useNavigate()
+  
   useEffect(() => {
     async function fetchStats() {
       try {
-        let url = "api/statistic/products"
+        let url = "/api/statistic/products"
         const res = await fetch(url)
+        
         const data = await res.json()
         
         if (data.message !== "fail") {
@@ -65,10 +69,10 @@ const Dashboard = () => {
         <Status status={connect}/>
       </div>
       <div className="flex justify-between gap-2.5">
-        <LabelNumber label="Products" num={stats?.totalProducts || 0} />
-        <LabelNumber label="Low" num={stats?.lowStocks || 0} />
-        <LabelNumber label="Categories" num={stats?.totalCategories || 0} />
-        <LabelNumber label="Trash" num={stats?.totalTrash || 0} />
+        <LabelNumber label="Products" num={stats?.products || 0} click={() => navigate("/products")}/>
+        <LabelNumber label="Low" num={stats?.lowS || 0} />
+        <LabelNumber label="Categories" num={stats?.categories || 0} />
+        <LabelNumber label="Trash" num={stats?.trash || 0} />
       </div>
       <div className="flex flex-col gap-2.5">
         <h2 className="text-xl">Stock Overview</h2>

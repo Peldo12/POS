@@ -3,10 +3,10 @@ import '../index.css'
 
 const Loading = () => {
   return (
-    <div className="flex gap-3 h-10">
-      <div className="w-5 h-5 rounded-full bg-amber-800 animate-bounce-1"></div>
-      <div className="w-5 h-5 rounded-full bg-amber-400 animate-bounce-2"></div>
-      <div className="w-5 h-5 rounded-full bg-amber-600 animate-bounce-3"></div>
+    <div className="fixed inset-0 flex items-center justify-center gap-2.5">
+      <div className="size-3 rounded-full bg-green-500 animate-bounce"></div>
+      <div className="size-3 rounded-full bg-green-700 animate-bounce [animation-delay:150ms]"></div>
+      <div className="size-3 rounded-full bg-green-900 animate-bounce [animation-delay:300ms]"></div>
     </div>
   )
 }
