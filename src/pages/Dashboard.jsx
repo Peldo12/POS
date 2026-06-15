@@ -7,7 +7,7 @@ import LabelNumber from '../components/LabelNumber'
 import Loading from '../components/Loading'
 import ThreeList from '../components/ThreeList'
 
-const Dashboard = () => {
+const Dashboard = ({setToast}) => {
   const [isLoading, setLoading] = useState(true)
   const [stats, setStats] = useState(null)
   const [items, setItems] = useState([])
@@ -20,7 +20,7 @@ const Dashboard = () => {
       try {
         let url = "/api/statistic/products"
         const res = await fetch(url)
-        
+        if (!res.ok) throw new Error("Server not responding")
         const data = await res.json()
         
         if (data.message !== "fail") {
@@ -30,8 +30,8 @@ const Dashboard = () => {
           setConnect("")
           setStats(null)
         }
-      } catch (error) {
-        console.error("Failed to fetch stats:", error)
+      } catch (e) {
+        setToast({message: e.message || "Failed connect to server", type: "error"})
         setConnect("")
         setStats(null)
       }
@@ -40,17 +40,17 @@ const Dashboard = () => {
     
     async function fetchProducts() {
       try {
-        let url = "api/products"
+        let url = "/api/products"
         const res = await fetch(url)
         const data = await res.json()
         
-        if (data.message !== "fail") {
-          console.warn(data.message)
+        if (data.status !== "ok") {
+          throw new Error(data.message)
         }
         setItems(data.data || [])
         setLoading(false)
-      } catch (error) {
-        console.error("Failed to fetch products:", error)
+      } catch (e) {
+        setToast({message: e.message || "Failed connect to server", type: "error"})
         setItems([])
       }
     }

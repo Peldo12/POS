@@ -1,4 +1,6 @@
-export default function FieldInput({ label, name, type = "text", value, onChange, error, success, hint, icon, ...props }) {
+import { useEffect } from 'react'
+
+export default function FieldInput({ label, name, type = "text", value, onChange, isValid, setValidate, error, success, hint, icon, maxWidth, ...props }) {
   const borderClass = error
     ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
     : success
@@ -24,7 +26,9 @@ export default function FieldInput({ label, name, type = "text", value, onChange
     : success
     ? "peer-focus:text-emerald-400 peer-[:not(:placeholder-shown)]:text-emerald-400"
     : "peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:text-indigo-400";
-
+  
+  const width = maxWidth ? "w-[200px]" : ""
+  
   return (
     <div className="relative">
       <input
@@ -33,17 +37,17 @@ export default function FieldInput({ label, name, type = "text", value, onChange
         value={value}
         onChange={onChange}
         placeholder=" "
-        className={`peer rounded-xl bg-zinc-900 ${borderClass} border px-4 pt-5 pb-2 text-sm text-zinc-100 outline-none transition-all focus:ring-2 placeholder-transparent ${icon ? "pr-10" : ""}`}
+        className={`peer rounded-xl bg-zinc-900 ${width} ${borderClass} border px-4 pt-5 pb-2 text-sm text-zinc-100 outline-none transition-all focus:ring-2 placeholder-transparent ${icon ? "pr-10" : ""}`}
         {...props}
       />
-      <label className={`pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-zinc-500 transition-all ${labelFloated} ${labelColor}`}>
+      <label className={`pointer-events-none absolute left-4 top-1/2 ${error || success || hint ? "-translate-y-2/2" : "-translate-y-1/2"} text-sm text-zinc-500 transition-all ${labelFloated} ${labelColor}`}>
         {label}
       </label>
       {icon && (
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-600">{icon}</span>
+        <span className={`absolute right-3 top-1/2 transition-all ${error || success || hint ? "-translate-y-2/2" : "-translate-y-1/2"} text-zinc-600`}>{icon}</span>
       )}
       {(error || success || hint) && (
-        <p className={`mt-1.5 px-1 text-xs ${error ? "text-red-400" : success ? "text-emerald-400" : "text-zinc-500"}`}>
+        <p className={`mt-1.5 px-1 text-xs transition-all ${error ? "text-red-400" : success ? "text-emerald-400" : "text-zinc-500"}`}>
           {error || success || hint}
         </p>
       )}

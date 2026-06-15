@@ -3,9 +3,10 @@ import {useState, useEffect} from 'react'
 import Loading from '../components/Loading'
 import Modal from '../components/Modal'
 
-const Products = () => {
+const Products = ({setToast}) => {
   const [isModal, setModal] = useState(false)
   const [isLoading, setLoading] = useState(true)
+  const [refresh, setRefresh] = useState(0)
   const [products, setProducts] = useState([])
   const [detail, setDetail] = useState(false)
   
@@ -14,23 +15,44 @@ const Products = () => {
       try {
         const res = await fetch("/api/products")
         const data = await res.json()
-        if (data.status !== "ok") setProducts([])
+        if (data.status !== "ok") {
+          setProducts([])
+          throw new Error(data.message)
+        }
         
         setProducts(data.data)
-        setLoading(false)
       } catch (e) {
         setProducts([])
+        setToast({message: e.message || "Failed connect to server", type: "error"})
+      } finally {
         setLoading(false)
-        console.log(e)
       }
     }
     fetchProducts()
-  }, [])
+  }, [refresh])
   
   return (
     <div className="p-2.5 min-h-dvh relative">
       {isLoading && <Loading />}
-      {isModal && <Modal show={() => setModal(false)}/>}
+      {isModal && <Modal 
+        title="Add Products" 
+        show={() => setModal(false)} 
+        field={[
+          {name:"sku"},
+          {name: "barcode"},
+          {name: "name"},
+          {name: "description"},
+          {name: "buying_price", type: "number"},
+          {name: "price", type: "number"},
+          {name: "category_id", type: "number"},
+          {name: "stock", type: "number"},
+          {name: "minimum_stock", type: "number"},
+          {name: "weight", type: "number"},
+          {name: "image"}
+        ]}
+        setToast={setToast}
+        setRefresh={() => setRefresh(prev => prev + 1)}
+      />}
       <div className="flex justify-between items-center border border-gray-100 rounded p-1 ">
         <h1 className="text-4xl">Inventory</h1>
         <p className="text-lg">Admin</p>
