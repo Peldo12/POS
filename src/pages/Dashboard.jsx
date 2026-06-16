@@ -70,7 +70,7 @@ const Dashboard = ({setToast}) => {
       </div>
       <div className="flex justify-between gap-2.5">
         <LabelNumber label="Products" num={stats?.products || 0} click={() => navigate("/products")}/>
-        <LabelNumber label="Low" num={stats?.lowS || 0} />
+        <LabelNumber label="Low" num={stats?.low || 0} />
         <LabelNumber label="Categories" num={stats?.categories || 0} />
         <LabelNumber label="Trash" num={stats?.trash || 0} />
       </div>

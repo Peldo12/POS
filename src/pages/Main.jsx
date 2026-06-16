@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import ThreeList from '../components/ThreeList'
 
 const Main = ({setToast}) => {
- const [products, setProducts] =  useState([])
+  const [products, setProducts] =  useState([])
   
   useEffect(() => {
     async function fetchProducts() {

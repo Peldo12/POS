@@ -25,7 +25,7 @@ const Toast = ({ toast, setToast }) => {
 
   return (
     <div
-      className={`fixed top-4 z-50 transition-all duration-300 p-2.5 rounded 
+      className={`fixed top-16 z-[9999] transition-all duration-300 p-2.5 rounded 
         ${ isShow ? "right-4" : "-right-20" } 
         ${toastStyle[toast?.type]}
       `}

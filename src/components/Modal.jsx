@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { PenLine } from 'lucide-react'
-
 import { fieldIcons } from '../helpers/Icons'
 
 import FieldInput from './FieldInput'
@@ -10,25 +8,45 @@ import Button from './Button'
 import AppError from '../utils/AppError'
 
 const Modal = ({ title, show, field, setToast, setRefresh }) => {
-  const [form, setForm] = useState({})
-  
+  const [form, setForm] = useState({
+    sku: "", 
+    barcode: "", 
+    name: "",
+    description: "",
+    buying_price: "",
+    price: "",
+    category_id: "",
+    stock: "",
+    minimum_stock: "",
+    weight: "",
+    image: null
+  })
   const navigate = useNavigate()
   function handleChange(e) {
-   setForm(prev => ({...prev, [e.target.name] : e.target.value}))
- }
+    e.target.type !== "file" 
+      ? setForm(prev => ({...prev, [e.target.name] 
+      : e.target.value})) : setForm(prev => ({...prev, [e.target.name] : e.target.files[0]}))
+  }
   
   async function handleAdd() {
     try {
       let url = "/api/products/create"
       const token = localStorage.getItem("token")
       if (!token) throw new Error("Please login first")
+      
+      const dataBox = new FormData()
+      for (let key in form) {
+        if (form[key] !== null && form[key] !== "") {
+          dataBox.append(key, form[key])
+        }
+      }
+      
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+          "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(form)
+        body: dataBox
       })
       const data = await res.json()
       if (data.status !== "ok") throw new Error(data.message)
@@ -43,7 +61,7 @@ const Modal = ({ title, show, field, setToast, setRefresh }) => {
   
   return (
     <>
-      <div className="w-screen h-screen fixed inset-0 flex flex-col justify-center items-center z-40 backdrop-blur-sm gap-2.5">
+      <div className="w-screen h-screen fixed inset-0 flex flex-col justify-center items-center z-30 backdrop-blur-sm gap-2.5">
         <p className="text-2xl">{title || "No Title"}</p>
         <div className="flex flex-wrap justify-center items-center gap-2.5 max-h-[70dvh] overflow-y-auto">
           {field.map((e, idx) => {

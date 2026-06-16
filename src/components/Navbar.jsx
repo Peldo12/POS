@@ -1,0 +1,44 @@
+import { useState } from 'react'
+
+import { Menu } from 'lucide-react'
+const Navbar = () => {
+  const [isOpen, setOpen] = useState(false);
+  
+  return (
+    <>
+      {/* Container utama Navbar */}
+      <div className="fixed top-0 left-0 right-0 p-2.5 z-50 bg-white/50 backdrop-blur-md">
+        <div className="grid grid-cols-[2fr_1fr_1fr]">
+          <Menu
+            size={40}
+            className="cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={() => setOpen(prev => !prev)}
+          />
+          <p className="self-center font-semibold text-zinc-900">Inventory</p>
+          <p className="text-right self-center font-medium text-zinc-900">Admin</p>
+        </div>
+      </div>
+
+      {/* Sidebar Dropdown */}
+      <div
+        className={`fixed top-16 left-2 w-52 bg-zinc-900 text-white border border-zinc-700 rounded-lg p-3 flex flex-col gap-3 transition-transform duration-300 z-50 ${
+          isOpen ? "translate-x-0" : "-translate-x-[120%]"
+        }`}
+      >
+        <p className="cursor-pointer hover:text-zinc-300 transition-colors">Inventory</p>
+        <p className="cursor-pointer hover:text-zinc-300 transition-colors">Categories</p>
+        <p className="cursor-pointer hover:text-zinc-300 transition-colors">Transaction</p>
+      </div>
+
+      {/* Overlay Blur (Bisa diklik untuk tutup menu) */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/10 backdrop-blur-sm z-40 h-screen transition-all"
+          onClick={() => setOpen(false)} 
+        />
+      )}
+    </>
+  );
+};
+
+export default Navbar
