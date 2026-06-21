@@ -8,6 +8,7 @@ import LabelLink from "../components/LabelLink"
 import { Eye, EyeOff, User } from 'lucide-react'
 
 import Validation from '../utils/Validation'
+import customFetch from '../utils/api'
 
 export default function Login({setToast}) {
   const [form , setForm] = useState({})
@@ -21,15 +22,7 @@ export default function Login({setToast}) {
       if (!form.password) return setValidate(prev => ({...prev, password: Validation("Password")}))
       
       e.preventDefault()
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Connection": "keep-alive",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(form)
-      })
-      const result = await res.json()
+      const result = await customFetch("/api/auth/login", "POST", form)
       if (result.status !== "ok") return setToast({message: result.message, type: "warning"})
       
       localStorage.setItem("token", result.data.token)

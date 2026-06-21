@@ -7,6 +7,8 @@ import Navbar from '../components/Navbar'
 import Modal from '../components/Modal'
 import Button from '../components/Button'
 
+import customFetch from '../utils/api'
+
 const Products = ({setToast}) => {
   const [isModal, setModal] = useState(false)
   const [isLoading, setLoading] = useState(true)
@@ -21,12 +23,7 @@ const Products = ({setToast}) => {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch("/api/products")
-        const data = await res.json()
-        if (data.status !== "ok") {
-          setProducts([])
-          throw new Error(data.message)
-        }
+        const data = await customFetch("/api/products")
         setProducts(data.data)
       } catch (e) {
         setProducts([])
@@ -41,9 +38,7 @@ const Products = ({setToast}) => {
   async function fetchProductsId(id) {
     try {
       const url = `/api/products/${id}`
-      const res = await fetch(url)
-      if (!res.ok) throw new Error("Fail to get data")
-      const data = await res.json()
+      const data = await customFetch(url)
       setInitial(data.data)
       setModal(true)
       setSubmenu(null)
@@ -55,15 +50,8 @@ const Products = ({setToast}) => {
   async function fetchProductDelete(id) {
     try {
       const url = `/api/products/${id}/delete`
-      const token = localStorage.getItem("token")
-      const res = await fetch(url, {
-        method: "PATCH",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      })
-      const data = await res.json()
-      if (data.status !== "ok") throw new Error(data.message)
+      const data = await customFetch(url, "PATCH")
+      
       setRefresh(prev => prev + 1)
       setToast({message: "Products deletes", type: "success"})
       setRemove(null)

@@ -7,7 +7,10 @@ import LabelNumber from '../components/LabelNumber'
 import Loading from '../components/Loading'
 import ThreeList from '../components/ThreeList'
 
+import customFetch from '../utils/api'
+
 const Dashboard = ({setToast}) => {
+  const [products, setProducts] = useState([])
   const [isLoading, setLoading] = useState(true)
   const [stats, setStats] = useState(null)
   const [items, setItems] = useState([])
@@ -19,11 +22,9 @@ const Dashboard = ({setToast}) => {
     async function fetchStats() {
       try {
         let url = "/api/statistic/products"
-        const res = await fetch(url)
-        if (!res.ok) throw new Error("Server not responding")
-        const data = await res.json()
+        const data = await customFetch(url)
         
-        if (data.message !== "fail") {
+        if (data.status !== "fail") {
           setConnect("Online")
           setStats(data.data)
         } else {
@@ -41,12 +42,7 @@ const Dashboard = ({setToast}) => {
     async function fetchProducts() {
       try {
         let url = "/api/products"
-        const res = await fetch(url)
-        const data = await res.json()
-        
-        if (data.status !== "ok") {
-          throw new Error(data.message)
-        }
+        const data = await customFetch(url)
         setItems(data.data || [])
         setLoading(false)
       } catch (e) {

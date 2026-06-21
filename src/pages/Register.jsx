@@ -8,6 +8,7 @@ import Button from '../components/Button'
 import { Eye, EyeOff, User, Mail} from 'lucide-react'
 
 import Validation from '../utils/Validation'
+import customFetch from '../utils/api'
 
 export default function Register({setToast}) {
   const [form, setForm] = useState({})
@@ -21,21 +22,10 @@ export default function Register({setToast}) {
       if (!form.email) return setValidate(prev => ({...prev, email: Validation("Email")}))
       if (!form.password) return setValidate(prev => ({...prev, password: Validation("Password")}))
       e.preventDefault()
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Connection": "keep-alive",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(form)
-      })
-      if (!res.ok) throw new Error("Server not responding")
-      const result = await res.json()
-      
-      if (result.status !== "ok") return setToast({message: result.message, type: "warn"})
-      
+      const res = await customFetch("/api/auth/register", "POST", form)
       localStorage.setItem("token", result.data.token)
-      navigate("/")
+      setToast({message: "User created, please login", type: "success"})
+      navigate("/login")
     } catch (e) {
       setToast({message: e.message || "Failed connect to server", type: "error"})
     }

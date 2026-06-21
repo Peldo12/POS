@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { fieldIcons } from '../helpers/Icons'
-
 import FieldInput from './FieldInput'
 import Button from './Button'
 import AppError from '../utils/AppError'
+
+import { fieldIcons } from '../helpers/Icons'
+import customFetch from '../utils/api'
 
 const Modal = ({ title, show, field, setToast, setRefresh, isUpdate, initialData }) => {
   const defaultState = { sku: "", barcode: "", name: "", description: "", buying_price: "", price: "", category_id: "", stock: "", minimum_stock: "", weight: "", image: null }
@@ -29,9 +30,6 @@ const Modal = ({ title, show, field, setToast, setRefresh, isUpdate, initialData
   async function handleSubmit() {
     try {
       const url = isUpdate ? `api/products/${form.id}/update` : "/api/products/create"
-      const token = localStorage.getItem("token")
-      if (!token) throw new Error("Please login first")
-      
       const dataBox = new FormData()
       for (let key in form) {
         if (key === "id" || key === "created" || key === "updated" || key === "created_at" || key === "updated_at") continue
@@ -41,16 +39,8 @@ const Modal = ({ title, show, field, setToast, setRefresh, isUpdate, initialData
         }
       }
       
-      const res = await fetch(url, {
-        method: isUpdate ? "PUT" : "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`
-        },
-        body: dataBox
-      })
-      const data = await res.json()
-      if (data.status !== "ok") throw new Error(data.message)
-      
+      const method = isUpdate ? "PUT" : "POST"
+      const data = await customFetch(url, method, dataBox)
       show()
       setRefresh()
       isUpdate ? setToast({message: "Product has updated", type :"success"}) : setToast({message: "Product has added", type :"success"})
