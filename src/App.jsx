@@ -11,7 +11,7 @@ import Toast from './components/Toast'
 const App = () => {
   const [toast, setToast] = useState(null)
   return (
-    <>
+    <div className="select-none">
       <Toast toast={toast} setToast={setToast}/>
       <BrowserRouter>
         <Routes>
@@ -22,7 +22,7 @@ const App = () => {
           <Route path="/products" element={<Products setToast={setToast}/>} />
         </Routes>
       </BrowserRouter>
-    </>
+    </div>
   )
 }
 

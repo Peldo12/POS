@@ -30,7 +30,7 @@ export default function FieldInput({ label, name, type = "text", value, onChange
   const width = maxWidth ? "w-[200px]" : ""
   
   return (
-    <div className="relative">
+    <div className="relative select-text">
       <input
         name={name}
         type={type}
@@ -38,6 +38,7 @@ export default function FieldInput({ label, name, type = "text", value, onChange
         onChange={onChange}
         placeholder=" "
         className={`peer rounded-xl bg-zinc-900 ${width} ${borderClass} border px-4 pt-5 pb-2 text-sm text-zinc-100 outline-none transition-all focus:ring-2 placeholder-transparent ${icon ? "pr-10" : ""}`}
+        maxLength={126}
         {...props}
       />
       <label className={`pointer-events-none absolute left-4 top-1/2 ${error || success || hint ? "-translate-y-2/2" : "-translate-y-1/2"} text-sm text-zinc-500 transition-all ${labelFloated} ${labelColor}`}>
