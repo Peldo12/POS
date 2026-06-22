@@ -1,8 +1,22 @@
-import { useState } from 'react'
-
+import { useState, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Menu } from 'lucide-react'
+
+import { UserContext } from '../context/UserContext'
+
 const Navbar = () => {
   const [isOpen, setOpen] = useState(false);
+  const navigate = useNavigate()
+  const { user, setUser } = useContext(UserContext)
+  async function handleLogOut() {
+    try {
+      localStorage.removeItem("token")
+      setUser(null)
+      navigate("/login")
+    } catch (e) {
+      setUser(null)
+    }
+  }
   
   return (
     <>
@@ -15,7 +29,7 @@ const Navbar = () => {
             onClick={() => setOpen(prev => !prev)}
           />
           <p className="self-center font-semibold text-zinc-900">Inventory</p>
-          <p className="text-right self-center font-medium text-zinc-900">Admin</p>
+          <p className="text-right self-center font-medium text-zinc-900">{user.username || "Guest"}</p>
         </div>
       </div>
 
@@ -25,9 +39,9 @@ const Navbar = () => {
           isOpen ? "translate-x-0" : "-translate-x-[120%]"
         }`}
       >
-        <p className="cursor-pointer hover:text-zinc-300 transition-colors">Inventory</p>
+        <p className="cursor-pointer hover:text-zinc-300 transition-colors" onClick={() => navigate("/products")}>Inventory</p>
         <p className="cursor-pointer hover:text-zinc-300 transition-colors">Categories</p>
-        <p className="cursor-pointer hover:text-zinc-300 transition-colors">Transaction</p>
+        <p className="cursor-pointer hover:text-zinc-300 transition-colors" onClick={handleLogOut}>Log Out</p>
       </div>
 
       {/* Overlay Blur (Bisa diklik untuk tutup menu) */}

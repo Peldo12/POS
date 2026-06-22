@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from "react-router-dom"
 
 import FieldInput from "../components/FieldInput"
@@ -10,11 +10,15 @@ import { Eye, EyeOff, User } from 'lucide-react'
 import Validation from '../utils/Validation'
 import customFetch from '../utils/api'
 
+import { UserContext } from '../context/UserContext'
+
 export default function Login({setToast}) {
   const [form , setForm] = useState({})
   const [passType, setPassType] = useState("password")
   const [isValid, setValidate] = useState({})
   const navigate = useNavigate()
+  
+  const { setUser } = useContext(UserContext)
   
   async function isUser(e) {
     try {
@@ -25,7 +29,9 @@ export default function Login({setToast}) {
       const result = await customFetch("/api/auth/login", "POST", form)
       if (result.status !== "ok") return setToast({message: result.message, type: "warning"})
       
-      localStorage.setItem("token", result.data.token)
+      const { payload, token } = result.data
+      localStorage.setItem("token", token)
+      setUser(payload)
       setToast({message: `Welcome ${form.username}`, type: "success"})
       navigate("/dashboard")
     } catch (e) {

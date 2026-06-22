@@ -18,9 +18,16 @@ export default async function customFetch(url, method = "GET", body = null) {
   }
   
   const res = await fetch(url, option)
-  const data = await res.json()
   
+  const data = await res.json()
+  if (data.message == "jwt expired") {
+    localStorage.removeItem("token")
+    window.location.href = "/login"
+    
+    throw new Error("End of session, please login")
+  }
   if (!res.ok || data.status !== "ok") throw new Error(data.message || "Terjadi kesalahan pada server")
+  
   
   return data
 }

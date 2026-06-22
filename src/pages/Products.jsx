@@ -1,5 +1,5 @@
-import {useState, useEffect} from 'react'
-
+import { useState, useEffect,useContext } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Ellipsis } from 'lucide-react'
 
 import Loading from '../components/Loading'
@@ -8,18 +8,33 @@ import Modal from '../components/Modal'
 import Button from '../components/Button'
 
 import customFetch from '../utils/api'
+import { UserContext } from '../context/UserContext'
 
 const Products = ({setToast}) => {
-  const [isModal, setModal] = useState(false)
-  const [isLoading, setLoading] = useState(true)
+  const [search, setSearch] = useState("")
   const [refresh, setRefresh] = useState(0)
   const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
   const [detail, setDetail] = useState(false)
   const [subMenu, setSubmenu] = useState(null)
   const [initial, setInitial] = useState(null)
-  const [isUpdate, setUpdate] = useState(false)
   const [remove, setRemove] = useState("")
+  const [isModal, setModal] = useState(false)
+  const [isLoading, setLoading] = useState(true)
+  const [isUpdate, setUpdate] = useState(false)
   
+  const { user } = useContext(UserContext)
+  
+  const [searchParams] = useSearchParams()
+  const filterType = searchParams.get("filter")
+  
+  const filteredProducts = products.filter(item => {
+    if (filterType === "low") return item.stock <=item.minimum_stock
+    const keyword = search.toLowerCase()
+    const matchName = item?.name.toLowerCase().includes(keyword)
+    const matchSku = item?.sku.toLowerCase().includes(keyword)
+    return matchName || matchSku
+  })
   useEffect(() => {
     async function fetchProducts() {
       try {
@@ -32,7 +47,17 @@ const Products = ({setToast}) => {
         setLoading(false)
       }
     }
+    async function fetchCategories() {
+      try {
+        const data = await customFetch("/api/category")
+        setCategories(data.data)
+      } catch (e) {
+        setCategories([])
+        setToast({message: e.message || "Failed connect to server", type: "error"})
+      }
+    }
     fetchProducts()
+    fetchCategories()
   }, [refresh])
   
   async function fetchProductsId(id) {
@@ -67,6 +92,16 @@ const Products = ({setToast}) => {
   return (
     <div className="p-2.5 min-h-dvh relative">
       <Navbar />
+      {/* SEARCH BAR UI */}
+        <div className="mt-16 px-2.5">
+          <input 
+            type="text" 
+            placeholder="Search product by name..." 
+            className="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 select-text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       {isLoading && <Loading />}
       {isModal && <Modal 
         title={isUpdate ? "Update Products" : "Add Products"} 
@@ -78,7 +113,7 @@ const Products = ({setToast}) => {
           {name: "description"},
           {name: "buying_price", type: "number"},
           {name: "price", type: "number"},
-          {name: "category_id", type: "number"},
+          {name: "category_id", type: "select", options: categories},
           {name: "stock", type: "number"},
           {name: "minimum_stock", type: "number"},
           {name: "weight", type: "number"},
@@ -89,7 +124,7 @@ const Products = ({setToast}) => {
         initialData={initial}
         isUpdate={isUpdate}
       />}
-      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] pt-5 pb-2.5 mt-12 border-b border-amber-200">
+      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] pt-5 pb-2.5 border-b border-amber-200">
         <span className="text-center text-lg">Name</span>
         {detail && <span className="text-center">Category</span>}
         <span className="text-center text-lg">Buy</span>
@@ -97,15 +132,16 @@ const Products = ({setToast}) => {
         <span className="text-center text-lg">Stock</span>
         <span className="text-center text-lg">Action</span>
       </div>
+      {/* Products List*/}
       {
-        products.length === 0 ? <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">Add some products</p> 
+        filteredProducts.length === 0 ? <p className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">Not found any products</p> 
         : <div  className="overflow-y-auto flex flex-col gap-2.5 px-2.5 pt-2.5 pb-5 select-text">
-          {products.map(el => <div key={el.id} className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-2.5">
+          {filteredProducts.map(el => <div key={el.id} className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-2.5">
             <span>{el.name}</span>
             {detail && <span className="text-center">{el.category}</span>}
             <span className="text-center">{el.buying_price.toLocaleString()}</span>
             <span className="text-center">{el.price.toLocaleString()}</span>
-            <span className="text-center">{el.stock}</span>
+            <span className={`text-center ${el.stock < el.minimum_stock ? "text-red-600 bold animate-pulse" : ""}`}>{el.stock}</span>
             <div className="flex justify-center relative select-none" onClick={() => handleSubMenu(el.id)}>
               <Ellipsis />
               {subMenu === el.id && (
@@ -118,7 +154,9 @@ const Products = ({setToast}) => {
           </div>)
         }</div>
       }
+      {/* Add Button */}
       <div className="flex justify-center items-center absolute right-3 bottom-3 text-4xl bg-green-600 rounded-full w-16 h-16 active:scale-95" onClick={() => {setModal(true); setInitial(null)}}>+</div>
+      {/* Delete Modal*/}
       {remove && (
         <div className="w-screen h-screen fixed inset-0 flex justify-center items-center z-[90] backdrop-blur-sm bg-black/20">
           <div className="bg-white p-6 rounded-lg shadow-xl w-80 flex flex-col gap-4">
