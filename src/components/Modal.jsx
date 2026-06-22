@@ -20,7 +20,6 @@ const Modal = ({ title, show, field, setToast, setRefresh, isUpdate, initialData
     }
   }, [isUpdate, initialData])
   const navigate = useNavigate()
-  const filtered = !isUpdate ? field : field.filter(e => e.name !== "image")
   function handleChange(e) {
     e.target.type !== "file" 
       ? setForm(prev => ({...prev, [e.target.name] 
@@ -33,7 +32,6 @@ const Modal = ({ title, show, field, setToast, setRefresh, isUpdate, initialData
       const dataBox = new FormData()
       for (let key in form) {
         if (key === "id" || key === "created" || key === "updated" || key === "created_at" || key === "updated_at") continue
-        if (isUpdate && key === "image") continue
         if (form[key] !== null && form[key] !== "") {
           dataBox.append(key, form[key])
         }
@@ -53,15 +51,11 @@ const Modal = ({ title, show, field, setToast, setRefresh, isUpdate, initialData
   return (
     <>
       <div className="w-screen h-screen fixed inset-0 flex flex-col justify-center items-center z-30 backdrop-blur-sm gap-2.5">
-        <p className="text-2xl">{title || "No Title"}</p>
+        <p className="text-2xl">{isUpdate ? "Update Product" : "Add Product" || "No Title"}</p>
         <div className="flex flex-wrap justify-center items-center gap-2.5 max-h-[70dvh] overflow-y-auto">
-          {isUpdate ?
-          filtered.map((e, idx) => {
+          {field.map((e, idx) => {
           const Icons = fieldIcons[e.name]
-          return <FieldInput key={idx} label={e.name[0].toUpperCase() + e.name.slice(1)} type={e?.type || "text"} name={e.name} value={e.type === "file" ? undefined : (form[e.name] || "")} onChange={handleChange} icon={<Icons />} maxWidth={true}/>}) :
-          filtered.map((e, idx) => {
-          const Icons = fieldIcons[e.name]
-          return <FieldInput key={idx} label={e.name[0].toUpperCase() + e.name.slice(1)} type={e?.type || "text"} name={e.name} onChange={handleChange} icon={<Icons />} options={e.options} maxWidth={true}/>})}
+          return <FieldInput key={idx} label={e.name[0].toUpperCase() + e.name.slice(1)} type={e?.type || "text"} name={e.name} value={e.type === "file" ? undefined : (form[e.name] || "")} onChange={handleChange} icon={<Icons />} options={e.options} maxWidth={true}/>})}
         </div>
         <div className="flex justify-between w-[80dvw]">
           <Button click={() => show()}>Cancel</Button>

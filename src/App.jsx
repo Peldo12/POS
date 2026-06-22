@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Products from './pages/Products'
+import Category from './pages/Category'
 import NotFound from './pages/NotFound'
 import Toast from './components/Toast'
 import RouteProtect from './pages/RouteProtect'
@@ -24,6 +25,8 @@ const App = () => {
             <Dashboard setToast={setToast}/></RouteProtect>} />
           <Route path="/products" element={<RouteProtect>
             <Products setToast={setToast}/></RouteProtect>} />
+          <Route path="/category" element={<RouteProtect>
+            <Category setToast={setToast}/></RouteProtect>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
