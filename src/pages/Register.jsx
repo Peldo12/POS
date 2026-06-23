@@ -74,7 +74,7 @@ export default function Register({setToast}) {
         onChange={handleChange}
         error={isValid.password}
         ></FieldInput>
-      <Button click={createUser}>Sign</Button>
+      <Button onClick={createUser}>Sign</Button>
       <LabelLink label="Have account ?" anchor="/login" togo="Login here"/>
     </div>
   )

@@ -79,7 +79,7 @@ export default function Login({setToast}) {
         isValid={isValid}
         setValidate={setValidate}
         ></FieldInput>
-      <Button click={isUser}>Login</Button>
+      <Button onClick={isUser}>Login</Button>
       <LabelLink label="Need account ?" anchor="/register" togo="Register"/>
     </div>
   )

@@ -58,8 +58,8 @@ const Modal = ({ title, show, field, setToast, setRefresh, isUpdate, initialData
           return <FieldInput key={idx} label={e.name[0].toUpperCase() + e.name.slice(1)} type={e?.type || "text"} name={e.name} value={e.type === "file" ? undefined : (form[e.name] || "")} onChange={handleChange} icon={<Icons />} options={e.options} maxWidth={true}/>})}
         </div>
         <div className="flex justify-between w-[80dvw]">
-          <Button click={() => show()}>Cancel</Button>
-          <Button click={handleSubmit}>{isUpdate ? "Update" : "Add"}</Button>
+          <Button onClick={() => show()}>Cancel</Button>
+          <Button onClick={handleSubmit}>{isUpdate ? "Update" : "Add"}</Button>
         </div>
       </div>
     </>

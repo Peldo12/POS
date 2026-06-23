@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import Status from '../components/Status'
 import LabelNumber from '../components/LabelNumber'
 import Loading from '../components/Loading'
+import Navbar from '../components/Navbar'
 import ThreeList from '../components/ThreeList'
 import { UserContext } from '../context/UserContext'
 
@@ -63,33 +64,36 @@ const Dashboard = ({setToast}) => {
   }
   
   return (
-    <div className="flex flex-col p-2.5 gap-2.5">
-      <div className="flex justify-between w-full">
-        <div>
-          <h1 className="text-4xl">Dashboard</h1>
-          <p>Welcome back, {user.username || "Guest"}</p>
+    <>
+      <Navbar />
+      <div className="flex flex-col p-2.5 gap-2.5 mt-16">
+        <div className="flex justify-between w-full">
+          <div>
+            <h1 className="text-4xl">Dashboard</h1>
+            <p>Welcome back, {user.username || "Guest"}</p>
+          </div>
+          <Status status={connect}/>
         </div>
-        <Status status={connect}/>
-      </div>
-      <div className="flex justify-between gap-2.5">
-        <LabelNumber label="Products" num={stats?.products || 0} click={() => roleCheck("/products")}/>
-        <LabelNumber label="Low" num={stats?.low || 0} click={() => roleCheck("/products?filter=low")}/>
-        <LabelNumber label="Categories" num={stats?.categories || 0} />
-        <LabelNumber label="Trash" num={stats?.trash || 0} />
-      </div>
-      <div className="flex flex-col gap-2.5">
-        <h2 className="text-xl">Stock Overview</h2>
-        <HeaderProducts />
-        <div>
-          {(isLoading && <Loading />) || (items.length === 0 ? (
-            <p>No items to show</p>
-          ) :
-          items.map(el => 
-            <ThreeList key={el.id} first={el.name} second={el.price.toLocaleString()} third={el.stock}/>
-          ))}
+        <div className="flex justify-between gap-2.5">
+          <LabelNumber label="Products" num={stats?.products || 0} click={() => roleCheck("/products")}/>
+          <LabelNumber label="Low" num={stats?.low || 0} click={() => roleCheck("/products?filter=low")}/>
+          <LabelNumber label="Categories" num={stats?.categories || 0} />
+          <LabelNumber label="Trash" num={stats?.trash || 0} />
+        </div>
+        <div className="flex flex-col gap-2.5">
+          <h2 className="text-xl">Stock Overview</h2>
+          <HeaderProducts />
+          <div>
+            {(isLoading && <Loading />) || (items.length === 0 ? (
+              <p>No items to show</p>
+            ) :
+            items.map(el => 
+              <ThreeList key={el.id} first={el.name} second={el.price.toLocaleString()} third={el.stock}/>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

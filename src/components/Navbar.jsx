@@ -5,7 +5,8 @@ import { Menu } from 'lucide-react'
 import { UserContext } from '../context/UserContext'
 
 const Navbar = () => {
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(false)
+  const [title, setTitle] = useState(null)
   const navigate = useNavigate()
   const { user, setUser } = useContext(UserContext)
   async function handleLogOut() {
@@ -18,6 +19,10 @@ const Navbar = () => {
     }
   }
   
+  function handleRoute(url, text) {
+    setTitle(prev => prev = text)
+    navigate(url)
+  }
   return (
     <>
       {/* Container utama Navbar */}
@@ -28,7 +33,7 @@ const Navbar = () => {
             className="cursor-pointer hover:opacity-80 transition-opacity"
             onClick={() => setOpen(prev => !prev)}
           />
-          <p className="self-center font-semibold text-zinc-900">Inventory</p>
+          <p className="self-center font-semibold text-zinc-900">{title}</p>
           <p className="text-right self-center font-medium text-zinc-900">{user.username || "Guest"}</p>
         </div>
       </div>
@@ -39,8 +44,9 @@ const Navbar = () => {
           isOpen ? "translate-x-0" : "-translate-x-[120%]"
         }`}
       >
-        <p className="cursor-pointer hover:text-zinc-300 transition-colors" onClick={() => navigate("/products")}>Inventory</p>
-        <p className="cursor-pointer hover:text-zinc-300 transition-colors">Categories</p>
+        <p className="cursor-pointer hover:text-zinc-300 transition-colors" onClick={(e) => handleRoute("/dashboard", "Dashboard")}>Dashboard</p>
+        <p className="cursor-pointer hover:text-zinc-300 transition-colors" onClick={(e) => handleRoute("/products", e.target.textContent)}>Inventory</p>
+        <p className="cursor-pointer hover:text-zinc-300 transition-colors" onClick={(e) => handleRoute("/category", e.target.textContent)}>Categories</p>
         <p className="cursor-pointer hover:text-zinc-300 transition-colors" onClick={handleLogOut}>Log Out</p>
       </div>
 
