@@ -1,11 +1,24 @@
-import { useEffect } from 'react'
-
-export default function FieldInput({ label, name, type = "text", value, onChange, isValid, setValidate, error, success, hint, icon, maxWidth, options, ...props }) {
+export default function FieldInput({
+  label,
+  name,
+  type = 'text',
+  value,
+  onChange,
+  isValid,
+  setValidate,
+  error,
+  success,
+  hint,
+  icon,
+  maxWidth,
+  options,
+  ...props
+}) {
   const borderClass = error
-    ? "border-red-500 focus:border-red-500 focus:ring-red-500/10"
+    ? 'border-red-500 focus:border-red-500 focus:ring-red-500/10'
     : success
-    ? "border-emerald-500 focus:border-emerald-500 focus:ring-emerald-500/10"
-    : "border-zinc-700 focus:border-indigo-500 focus:ring-indigo-500/10";
+      ? 'border-emerald-500 focus:border-emerald-500 focus:ring-emerald-500/10'
+      : 'border-zinc-700 focus:border-indigo-500 focus:ring-indigo-500/10';
 
   const labelFloated = `
     peer-focus:top-2 peer-focus:translate-y-0
@@ -22,48 +35,60 @@ export default function FieldInput({ label, name, type = "text", value, onChange
   `;
 
   const labelColor = error
-    ? "peer-focus:text-red-400 peer-[:not(:placeholder-shown)]:text-red-400"
+    ? 'peer-focus:text-red-400 peer-[:not(:placeholder-shown)]:text-red-400'
     : success
-    ? "peer-focus:text-emerald-400 peer-[:not(:placeholder-shown)]:text-emerald-400"
-    : "peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:text-indigo-400";
-  
-  const width = maxWidth ? "w-[200px]" : ""
-  
+      ? 'peer-focus:text-emerald-400 peer-[:not(:placeholder-shown)]:text-emerald-400'
+      : 'peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:text-indigo-400';
+
+  const width = maxWidth ? 'w-[200px]' : '';
+
   return (
     <div className="relative select-text">
-      {type === "select" ? (
-        <select 
-        name={name}
-        value={value}
-        onChange={onChange}
-        className={`peer rounded-xl bg-zinc-900 ${width} ${borderClass} border px-4 pt-5 pb-2 text-sm text-zinc-100 outline-none transition-all focus:ring-2 placeholder-transparent appearance-none ${icon ? "pr-10" : ""}`}
+      {type === 'select' ? (
+        <select
+          name={name}
+          value={value}
+          onChange={onChange}
+          className={`peer rounded-xl bg-zinc-900 ${width} ${borderClass} border px-4 pt-5 pb-2 text-sm text-zinc-100 outline-none transition-all focus:ring-2 placeholder-transparent appearance-none ${icon ? 'pr-10' : ''}`}
         >
-          <option value="" disabled selected>-- Select {label} --</option>
-          {options && options.map((opt) => (
-             <option key={opt.id} value={opt.id}>
-               {`${opt.id}. ${opt.name}`}
-             </option>
-          ))}
+          <option value="" disabled selected>
+            -- Select {label} --
+          </option>
+          {options &&
+            options.map((opt) => (
+              <option key={opt.id} value={opt.id}>
+                {`${opt.id}. ${opt.name}`}
+              </option>
+            ))}
         </select>
-        ) : 
-      <input
-        name={name}
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder=" "
-        className={`peer rounded-xl bg-zinc-900 ${width} ${borderClass} border px-4 pt-5 pb-2 text-sm text-zinc-100 outline-none transition-all focus:ring-2 placeholder-transparent ${icon ? "pr-10" : ""}`}
-        maxLength={126}
-        {...props}
-      />}
-      <label className={`pointer-events-none absolute left-4 top-1/2 ${error || success || hint ? "-translate-y-2/2" : "-translate-y-1/2"} text-sm text-zinc-500 transition-all ${labelFloated} ${labelColor}`}>
+      ) : (
+        <input
+          name={name}
+          type={type}
+          value={value}
+          onChange={onChange}
+          placeholder=" "
+          className={`peer rounded-xl bg-zinc-900 ${width} ${borderClass} border px-4 pt-5 pb-2 text-sm text-zinc-100 outline-none transition-all focus:ring-2 placeholder-transparent ${icon ? 'pr-10' : ''}`}
+          maxLength={126}
+          {...props}
+        />
+      )}
+      <label
+        className={`pointer-events-none absolute left-4 top-1/2 ${error || success || hint ? '-translate-y-2/2' : '-translate-y-1/2'} text-sm text-zinc-500 transition-all ${labelFloated} ${labelColor}`}
+      >
         {label}
       </label>
       {icon && (
-        <span className={`absolute right-3 top-1/2 transition-all ${error || success || hint ? "-translate-y-2/2" : "-translate-y-1/2"} text-zinc-600`}>{icon}</span>
+        <span
+          className={`absolute right-3 top-1/2 transition-all ${error || success || hint ? '-translate-y-2/2' : '-translate-y-1/2'} text-zinc-600`}
+        >
+          {icon}
+        </span>
       )}
       {(error || success || hint) && (
-        <p className={`mt-1.5 px-1 text-xs transition-all ${error ? "text-red-400" : success ? "text-emerald-400" : "text-zinc-500"}`}>
+        <p
+          className={`mt-1.5 px-1 text-xs transition-all ${error ? 'text-red-400' : success ? 'text-emerald-400' : 'text-zinc-500'}`}
+        >
           {error || success || hint}
         </p>
       )}
